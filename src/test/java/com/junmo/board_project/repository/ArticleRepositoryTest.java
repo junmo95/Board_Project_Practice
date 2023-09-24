@@ -7,12 +7,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
 //import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
 
+//@ActiveProfiles("testdb") // yml 파일에 설정한 testdb = h2사용하도록 설정
 @DisplayName("JPA 연결 테스트")
 @Import(JpaConfig.class)  // 별도로 만든 설정 클래스 추가
 @DataJpaTest
