@@ -1,0 +1,41 @@
+# debug option, it gives too much information, so I set it to false
+debug: false
+
+# actuator library option : I can see detail log of Spring web application (endpoint, json data)
+management.endpoints.web.exposure.include: "*"
+
+# set targets what I want to see detail log
+# 1. myProject Application
+# 2. servlet instead of (debug: false) : request, response
+# 3. jpa query
+logging:
+  level:
+    com.junmo.board_project: debug
+    org.springframework.web.servlet: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+
+# DB
+spring:
+  # datasource : DB setting
+  datasource:
+    url: jdbc:mysql://localhost:3306/board_origin
+    username: junmo
+    password: qwer1029
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  # jpa : jpa setting
+  jpa:
+    defer-datasource-initialization: true  # can make test data in spring by 'data.sql'
+    hibernate.ddl-auto: create # make ddl query(make table from entity) auto
+    show-sql: true # show query through log
+    # mare detail hibernate properties : spirng properties only guaranteed simply work so, I set mote details
+    properties:
+      hibernate.format_sql: true  # debug query more pretty
+      hibernate.default_batch_fetch_size: 100 # select complicated query bulk (one of solution n+1)
+  h2.console.enabled: false # H2 setting
+  sql.init.mode: always # sql.data operate timing
+
+
+
+---
+
+# test DB setting
