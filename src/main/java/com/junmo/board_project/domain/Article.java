@@ -23,16 +23,18 @@ import java.util.Set;
         @Index(columnList = "createdAt"),
         @Index(columnList = "createdBy")
 })
-@EntityListeners(AuditingEntityListener.class) // auditing 리스너 설정 어노테이션(이벤트 감지, 관련 동작)
 @Entity
-public class Article {
+public class Article extends AuditingFields {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter @Column(nullable = false)
+    @Setter
+    @Column(nullable = false)
     private String title;   // 제목
-    @Setter @Column(nullable = false, length = 10000)
+    @Setter
+    @Column(nullable = false, length = 10000)
     private String content; // 본문
     @Setter
     private String hashtag; // 해시 태그
@@ -43,15 +45,17 @@ public class Article {
     private final Set<ArticleComment> articleComment = new LinkedHashSet<>();
 
 
-
-
-    @CreatedDate @Column(nullable = false)
+    @CreatedDate
+    @Column(nullable = false)
     private LocalDateTime createdAt; // 생성일시
-    @CreatedBy @Column(nullable = false, length = 100)
+    @CreatedBy
+    @Column(nullable = false, length = 100)
     private String createdBy; // 생성자
-    @LastModifiedDate @Column(nullable = false)
+    @LastModifiedDate
+    @Column(nullable = false)
     private LocalDateTime modifiedAt; // 수정일시
-    @LastModifiedBy @Column(nullable = false, length = 100)
+    @LastModifiedBy
+    @Column(nullable = false, length = 100)
     private String modifiedBy; // 수정자
 
 
