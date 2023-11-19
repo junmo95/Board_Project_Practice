@@ -2,6 +2,7 @@ package com.junmo.board_project.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedBy;
@@ -39,7 +40,8 @@ public class Article extends AuditingFields {
     @Setter
     private String hashtag; // 해시 태그
 
-    @ToString.Exclude
+    // 양방향 매핑에서 설정들은 주인&부모 쪽에서 하게 된다.
+    @ToString.Exclude // ToString 사용 시 순환참조를 방지하기 위한 (articleComment의 toString => article toString => ... 반복)
     @OrderBy("id") // ArticleComment 불러올때 정렬 기준 id로 설정
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL) // 연관관계 주인 article 설정
     private final Set<ArticleComment> articleComment = new LinkedHashSet<>();
@@ -75,14 +77,12 @@ public class Article extends AuditingFields {
         return new Article(title, content, hashtag);
     }
 
-    // 콜렉션에 이 엔티티 객체를 넣고 비교, 분석, 정렬을 할 수 있어 해당 함수 오버라이드 해줘야한다.
-    // 동등성 검사는 유니크한 id 값으로 하면되기에 id 값만으로 로직을 구성한다.
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Article article = (Article) o;
-        return id != null && id.equals(article.id); // id가 있는 엔티티이며, 같은 id여야지 true
+        return id != null && Objects.equals(id, article.id);
     }
 
     @Override

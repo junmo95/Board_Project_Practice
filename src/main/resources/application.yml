@@ -33,6 +33,10 @@ spring:
       hibernate.default_batch_fetch_size: 100 # select complicated query bulk (one of solution n+1)
   h2.console.enabled: false # H2 setting
   sql.init.mode: always # sql.data operate timing
+  # spring data rest setting
+  data.rest:
+    base-path: /api
+    detection-strategy: annotated
 
 
 

@@ -80,9 +80,16 @@ class ArticleRepositoryTest {
         article.setHashtag(updatedHashtag);
 
         // When
-        // Test 메서드 단위 별로 모든 동작이 롤백 되기 때문에 여기서 update한 내용도 롤백되어 원상복구됨
-        // 그래서 그것을 고려하여 변경내용 생략 -> update 쿼리가 동작하지 않기 때문에, saveAndFlush 함수로 강제 적용
+        // Test 메서드 단위 별로 모든 동작이 롤백 되기 때문에 여기서 update한 내용도 롤백되어 원상복구될 것이라고 스프링이 예상하게 된다.
+        // 그래서 테스트 코드에서 업데이트에 대한 내용은 아예 적용이 안된다(생략해버린다).
+        // 그렇기에 그것을 고려하여 변경내용 생략 -> update 쿼리가 동작하지 않기 때문에, saveAndFlush 함수로 강제 적용
         Article savedArticle = articleRepository.saveAndFlush(article);
+
+        // 이렇게해도 통과는 된다.
+        // 왜냐면 이렇게 되면 savedArticle에는 영속성 컨텍스트 객체 정보가 담긴다. 그 객체는 변동내역이 적용된 객체이다.
+        // 그래서 테스트 자체는 통과 되면지만 실질적인 테스트 검증은 되지 않는 것이다.
+//        Article savedArticle = articleRepository.save(article);
+
 
         // Then
         assertThat(savedArticle)
@@ -97,9 +104,11 @@ class ArticleRepositoryTest {
 
         // Given
         Article article = articleRepository.findById(1L).orElseThrow();
-        long previousArticleCount = articleRepository.count();
+        // 연관관계 때문에 게시글 삭제시 관련 댓글도 삭제되니 그 내용도 확인
+        long previousArticleCount = articleRepository.count(); // 지우기 전 전체 게시글
         long previousArticleCommentCount = articleCommentRepository.count(); // 지우기 전 전체 댓글
-        int deletedArticleCommentCount = article.getArticleComment().size(); // 지워질 게시글 소속 댓글들
+        
+        int deletedArticleCommentCount = article.getArticleComment().size(); // 지워질 게시글 소속 댓글들 (삭세 할 게시글의 댓글 개수)
 
         // When
         articleRepository.delete(article);
